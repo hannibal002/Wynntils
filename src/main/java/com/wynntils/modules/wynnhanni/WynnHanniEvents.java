@@ -20,9 +20,8 @@ import java.util.regex.Pattern;
 
 public class WynnHanniEvents implements Listener {
     private Pattern patternCombatExp = Pattern.compile("§7\\[§f\\+§f.*§f Combat XP§7]");
-    //'§4§l-50 ? §e§l-112 ?'
     private Pattern patternDamageSplash = Pattern.compile("((§.)+-\\d+ . )+");
-    private Pattern nonPvPPattern = Pattern.compile("§[ac].§f .§7 (Woodcutting|Mining|Farming) Lv\\. Min: §f.*");
+    private Pattern nonPvPPattern = Pattern.compile("§[ac].§f .§7 (Woodcutting|Mining|Farming|Fishing) Lv\\. Min: §f.*");
     private Pattern gatheringPostPattern = Pattern.compile("§2§aGathering Post §2\\[(Mining|Woodcutting|Farming) Lv\\. .*]");
     private Pattern slayingPostPattern = Pattern.compile("§2§aSlaying Post §2\\[Combat Lv\\. .*]");
     private Pattern guildAreaPattern = Pattern.compile("§7Controlled by §b§l.*§r§7 \\[Lv\\. .*]");
@@ -242,6 +241,13 @@ public class WynnHanniEvents implements Listener {
                 name.equals("§aMalt") || // lvl 30
                 name.equals("§aOat")) {  // lvl 20
             System.out.println("hide Farming: '" + name + "'");
+            entity.setCustomNameTag(" ");
+        }
+        if (name.equals("§8Left-Click for Oil") ||
+                name.equals("§8Right-Click for Meat") ||
+                name.equals("§aTrout")  // lvl 10
+                ) {
+            System.out.println("hide Fishing: '" + name + "'");
             entity.setCustomNameTag(" ");
         }
     }
