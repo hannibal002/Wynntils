@@ -14,6 +14,8 @@ import com.wynntils.modules.core.events.ServerEvents;
 import com.wynntils.modules.core.managers.TabManager;
 import com.wynntils.modules.core.overlays.DownloadOverlay;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
+import com.wynntils.modules.wynnhanni.TestHanni;
+import com.wynntils.modules.wynnhanni.WynnHanniEvents;
 
 @ModuleInfo(name = "core", displayName = "Core")
 public class CoreModule extends Module {
@@ -23,6 +25,7 @@ public class CoreModule extends Module {
     public void onEnable() {
         registerEvents(new ClientEvents());
         registerEvents(new ServerEvents());
+        registerEvents(new WynnHanniEvents());
 
         registerOverlay(new UpdateOverlay(), Priority.HIGHEST);
         registerOverlay(new DownloadOverlay(), Priority.HIGHEST);
@@ -36,6 +39,7 @@ public class CoreModule extends Module {
         registerCommand(new CommandTerritory());
         registerCommand(new CommandToken());
         registerCommand(new CommandWynntils());
+        registerCommand(new TestHanni());
 
         TabManager.replaceTabOrderer();
 
