@@ -52,6 +52,11 @@ public class WynnHanniEvents implements Listener {
                 damageIndicator(entity);
             }
 
+            if (WynnHanniConfig.HIDE_NEUTRAL_NPCS) {
+                hideNeutralNpcs(entity);
+            }
+            hideFestivalOfHeroes(entity);
+
             if (entity instanceof EntityArmorStand) {
                 String name = entity.getName();
                 if (WynnHanniConfig.HIDE_EXP_SPLASH) {
@@ -103,6 +108,27 @@ public class WynnHanniEvents implements Listener {
                 }
             }
         }
+    }
+
+    private void hideFestivalOfHeroes(Entity entity) {
+
+    }
+
+    private void hideNeutralNpcs(Entity entity) {
+        if (isDetlasNpc(entity.getName())) {
+            entity.setCustomNameTag(" ");
+        }
+    }
+
+    private boolean isDetlasNpc(String name) {
+        if (name.equals("§aDetlas Citizen§6 [Lv. 10]")) return true;
+        if (name.equals("§bDetlas Soldier§6 [Lv. 20]")) return true;
+        if (name.equals("§bDetlas Guard§6 [Lv. 20]")) return true;
+        if (name.equals("§bBarrack Guard§6 [Lv. 30]")) return true;
+        if (name.equals("§aTravelling Merchant§6 [Lv. 10]")) return true;
+        if (name.equals("§bElite Soldier§6 [Lv. 100]")) return true;
+
+        return false;
     }
 
     private Boolean hideArmorStandsAround(EntityArmorStand entity) {
