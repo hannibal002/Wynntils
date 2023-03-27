@@ -24,15 +24,23 @@ public class TestHanni extends CommandBase implements IClientCommand {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        testHanni();
+        int radius = 10;
+        if (args.length == 1) {
+            try {
+                radius = Integer.parseInt(args[0]);
+            } catch (Exception e) {
+                return;
+            }
+        }
+        testHanni(radius);
     }
 
-    private void testHanni() {
+    private void testHanni(int radius) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
         System.out.println(" ");
         for (Entity entity : Minecraft.getMinecraft().world.loadedEntityList) {
             float distance = entity.getDistance(player);
-            if (distance < 10) {
+            if (distance < radius) {
                 if (entity instanceof EntityArmorStand) {
 //                    System.out.println(" ");
 //                    System.out.println("EntityArmorStand!");
