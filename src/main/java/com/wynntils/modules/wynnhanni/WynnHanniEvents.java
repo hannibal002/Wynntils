@@ -222,6 +222,7 @@ public class WynnHanniEvents implements Listener {
                 name.equals("§aOak") || // lvl 5
                 name.equals("§aWillow") || // lvl 20
                 name.equals("§aAcacia") || // lvl 30
+                name.equals("§aSpruce") || // lvl 40
                 name.equals("§aBirch")) { // lvl 10
             System.out.println("hide Woodcutting: '" + name + "'");
             entity.setCustomNameTag(" ");
