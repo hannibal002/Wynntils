@@ -1,5 +1,6 @@
 package com.wynntils.modules.wynnhanni;
 
+import com.wynntils.core.events.custom.ChatEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -8,6 +9,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.projectile.EntityArrow;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -30,6 +32,49 @@ public class WynnHanniEvents implements Listener {
     private List<EntityArmorStand> posts = new ArrayList<>();
     private List<EntityArmorStand> guildAreas = new ArrayList<>();
     private Map<Entity, Integer> mobHealth = new HashMap<>();
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public void onChatToRedirect(ChatEvent.Pre event) {
+        String text = event.getMessage().getFormattedText();
+
+        Pattern reachLevel = Pattern.compile("§8\\[§r§7!§r§8] §r§7Congratulations to §r§f.*§r§7 for reaching .* §r§flevel .*§r§7!§r");
+
+        Matcher matcher = reachLevel.matcher(text);
+        if (matcher.matches()) {
+            event.setCanceled(true);
+            return;
+        }
+
+        //§6[Event] §r§c§lFestival of the Heroes: §r§5Watch a live performance in Detlas to gain temporary buffs!
+        // §r§5The festival closes its doors in §r§c19 days.§r
+        if (text.startsWith("§6[Event] §r§c§lFestival of the Heroes: §r§5Watch a live performance in Detlas")) {
+            event.setCanceled(true);
+            return;
+        }
+
+        //§6[Event] §r§c§lFestival of the Heroes: §r§5For a limited-time, use the Event Airship in Detlas to play:
+        // §r§dThe Claim to Heroism§r§5! §r§5The festival closes its doors in §r§c19 days.§r'
+        //[03:33:50] [Client thread/INFO] [chat]: [CHAT] [Event] Festival of the Heroes: For a limited-time,
+        // use the Event Airship in Detlas to play: The Claim to Heroism! The festival closes its doors in 19 days.
+        if (text.startsWith("§6[Event] §r§c§lFestival of the Heroes: §r§5For a limited-time")) {
+            event.setCanceled(true);
+            return;
+        }
+
+        if (text.equals("§6Thank you for using the WynnPack. Enjoy the game!§r")) {
+            event.setCanceled(true);
+            return;
+        }
+
+        //§3JohnBleu [WC1] shouts: §r§bskill issue§r
+        Pattern pattern = Pattern.compile("§3.* \\[W.*] shouts: §r§b.*§r");
+        if (pattern.matcher(text).matches()) {
+            event.setCanceled(true);
+            return;
+        }
+
+        System.out.println("chat: '" + text + "'");
+    }
 
     @SubscribeEvent
     public void processPacketQueue(TickEvent.ClientTickEvent e) {
@@ -239,6 +284,7 @@ public class WynnHanniEvents implements Listener {
         }
         if (name.equals("§8Left-Click for String") ||
                 name.equals("§8Right-Click for Grains") ||
+                name.equals("§aBarley") || // lvl 10
                 name.equals("§aMalt") || // lvl 30
                 name.equals("§aOat")) {  // lvl 20
             System.out.println("hide Farming: '" + name + "'");
@@ -247,7 +293,7 @@ public class WynnHanniEvents implements Listener {
         if (name.equals("§8Left-Click for Oil") ||
                 name.equals("§8Right-Click for Meat") ||
                 name.equals("§aTrout")  // lvl 10
-                ) {
+        ) {
             System.out.println("hide Fishing: '" + name + "'");
             entity.setCustomNameTag(" ");
         }
