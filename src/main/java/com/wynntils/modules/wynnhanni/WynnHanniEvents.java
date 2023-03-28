@@ -31,6 +31,7 @@ public class WynnHanniEvents implements Listener {
 
     private List<EntityArmorStand> posts = new ArrayList<>();
     private List<EntityArmorStand> guildAreas = new ArrayList<>();
+    private List<EntityArmorStand> craftingStations = new ArrayList<>();
     private Map<Entity, Integer> mobHealth = new HashMap<>();
 
     @SubscribeEvent(priority = EventPriority.LOW)
@@ -56,7 +57,10 @@ public class WynnHanniEvents implements Listener {
         // §r§dThe Claim to Heroism§r§5! §r§5The festival closes its doors in §r§c19 days.§r'
         //[03:33:50] [Client thread/INFO] [chat]: [CHAT] [Event] Festival of the Heroes: For a limited-time,
         // use the Event Airship in Detlas to play: The Claim to Heroism! The festival closes its doors in 19 days.
-        if (text.startsWith("§6[Event] §r§c§lFestival of the Heroes: §r§5For a limited-time")) {
+
+        //§6[Event] §r§c§lFestival of the Heroes: §r§5Grab 3 free Heroes Crates on our store at §r§dwynncraft.com/store§r§d !
+        // §r§5The festival closes its doors in §r§c19 days.§r
+        if (text.startsWith("§6[Event] §r§c§lFestival of the Heroes: ")) {
             event.setCanceled(true);
             return;
         }
@@ -102,34 +106,44 @@ public class WynnHanniEvents implements Listener {
             hideFestivalOfHeroes(entity);
 
             if (entity instanceof EntityArmorStand) {
-                String name = entity.getName();
+                EntityArmorStand armorStand = (EntityArmorStand) entity;
+                String name = armorStand.getName();
                 if (WynnHanniConfig.HIDE_EXP_SPLASH) {
                     if (patternCombatExp.matcher(name).matches()) {
-                        entity.setCustomNameTag(" ");
+                        armorStand.setCustomNameTag(" ");
                     }
                     if (name.equals(playerCombatExpName)) {
-                        entity.setCustomNameTag(" ");
+                        armorStand.setCustomNameTag(" ");
                     }
                 }
                 if (WynnHanniConfig.HIDE_DAMAGE_SPLASH) {
                     if (patternDamageSplash.matcher(name).matches()) {
-                        entity.setCustomNameTag(" ");
+                        armorStand.setCustomNameTag(" ");
                     }
                 }
                 if (WynnHanniConfig.HIDE_GATHERING_SPOTS) {
-                    hideGatherings(entity, name);
+                    hideGatherings(armorStand, name);
                 }
                 if (WynnHanniConfig.HIDE_GATHERING_POSTS) {
-                    hideGatheringPost(((EntityArmorStand) entity), name);
+                    hideGatheringPost(armorStand, name);
                 }
                 if (WynnHanniConfig.HIDE_SLAYING_POSTS) {
-                    hideSlayingPost(((EntityArmorStand) entity), name);
+                    hideSlayingPost(armorStand, name);
                 }
                 if (WynnHanniConfig.HIDE_GUILD_SPOTS) {
-                    hideAreaPost(((EntityArmorStand) entity), name);
+                    hideAreaPost(armorStand, name);
                 }
-                if (hideArmorStandsAround((EntityArmorStand) entity)) {
-                    world.removeEntity(entity);
+                if (hideArmorStandsAround(armorStand)) {
+                    world.removeEntity(armorStand);
+                }
+
+                if (WynnHanniConfig.HIDE_CRAFTING_STATION) {
+                    if (armorStand.getName().equals("§7§7Crafting Station")) {
+                        craftingStations.add(armorStand);
+                    }
+                    if (hideCraftingStation(entity)) {
+                        world.removeEntity(entity);
+                    }
                 }
             }
             if (WynnHanniConfig.HIDE_ARROWS) {
@@ -154,6 +168,17 @@ public class WynnHanniEvents implements Listener {
         }
     }
 
+    private boolean hideCraftingStation(Entity entity) {
+        for (EntityArmorStand station : craftingStations) {
+            if (station.posX == entity.posX) {
+                if (station.posZ == entity.posZ) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     private void hideFestivalOfHeroes(Entity entity) {
 
     }
@@ -162,6 +187,18 @@ public class WynnHanniEvents implements Listener {
         if (isDetlasNpc(entity.getName())) {
             entity.setCustomNameTag(" ");
         }
+        if (isAlmujNpc(entity.getName())) {
+            entity.setCustomNameTag(" ");
+        }
+    }
+
+    private boolean isAlmujNpc(String name) {
+        if (name.equals("§aAlmuj Citizen§6 [Lv. 30]")) return true;
+        if (name.equals("§bAlmuj Soldier§6 [Lv. 40]")) return true;
+        if (name.equals("§aHungry Almuj Citizen§6 [Lv. 20]")) return true;
+        if (name.equals("§bAlmuj Slums Watch§6 [Lv. 30]")) return true;
+
+        return false;
     }
 
     private boolean isDetlasNpc(String name) {

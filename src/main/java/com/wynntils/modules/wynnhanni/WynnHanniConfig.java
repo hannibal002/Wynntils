@@ -12,4 +12,5 @@ public class WynnHanniConfig {
     public static boolean HIDE_DYING_MOBS = true;
     public static boolean COMPACT_DAMAGE_INDICATOR = true;
     public static boolean HIDE_NEUTRAL_NPCS = true;
+    public static boolean HIDE_CRAFTING_STATION = true;
 }
