@@ -190,6 +190,9 @@ public class WynnHanniEvents implements Listener {
         if (isAlmujNpc(entity.getName())) {
             entity.setCustomNameTag(" ");
         }
+        if (isNesaakNpc(entity.getName())) {
+            entity.setCustomNameTag(" ");
+        }
     }
 
     private boolean isAlmujNpc(String name) {
@@ -208,6 +211,14 @@ public class WynnHanniEvents implements Listener {
         if (name.equals("§bBarrack Guard§6 [Lv. 30]")) return true;
         if (name.equals("§aTravelling Merchant§6 [Lv. 10]")) return true;
         if (name.equals("§bElite Soldier§6 [Lv. 100]")) return true;
+
+        return false;
+    }
+
+    private boolean isNesaakNpc(String name) {
+        if (name.equals("§aNesaak Citizen§6 [Lv. 40]")) return true;
+        if (name.equals("§bNesaak Guard§6 [Lv. 50]")) return true;
+        if (name.equals("§bNesaak Guard Golem§6 [Lv. 50]")) return true;
 
         return false;
     }
