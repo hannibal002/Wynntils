@@ -329,6 +329,8 @@ public class WynnHanniEvents implements Listener {
         }
         if (name.equals("§8Left-Click for Oil") ||
                 name.equals("§8Right-Click for Meat") ||
+                name.equals("§aCarb") || // lvl 30
+                name.equals("§aIcefish") || // lvl 40
                 name.equals("§aTrout")  // lvl 10
         ) {
             System.out.println("hide Fishing: '" + name + "'");
