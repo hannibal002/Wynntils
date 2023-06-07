@@ -9,7 +9,14 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.monster.EntityZombie;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.IClientCommand;
+
+import java.awt.*;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TestHanni extends CommandBase implements IClientCommand {
     @Override
@@ -37,26 +44,21 @@ public class TestHanni extends CommandBase implements IClientCommand {
 
     private void testHanni(int radius) {
         EntityPlayerSP player = Minecraft.getMinecraft().player;
-        System.out.println(" ");
+        List<String> list = new ArrayList<>();
         for (Entity entity : Minecraft.getMinecraft().world.loadedEntityList) {
+            if (entity instanceof EntityPlayerSP) {
+                continue;
+            }
             float distance = entity.getDistance(player);
             if (distance < radius) {
                 if (entity instanceof EntityArmorStand) {
-//                    System.out.println(" ");
-//                    System.out.println("EntityArmorStand!");
                     String name = entity.getName();
-                    String formattedText = entity.getDisplayName().getFormattedText();
-                    String unformattedText = entity.getDisplayName().getUnformattedText();
-                    String customNameTag = entity.getCustomNameTag();
-                    System.out.println("EntityArmorStand '" + name + "' - " + distance );
-//                    System.out.println("formattedText: '" + formattedText + "'");
-//                    System.out.println("unformattedText: '" + unformattedText + "'");
-//                    System.out.println("customNameTag: '" + customNameTag + "'");
-                    System.out.println("distance: '" + distance + "'");
-//                    System.out.println(" ");
+                    list.add("EntityArmorStand '" + name + "' - " + distance);
                 } else {
                     String simpleName = entity.getClass().getSimpleName();
-                    System.out.println("distance to '" + simpleName + "' (" + distance + ")");
+                    list.add("distance to '" + simpleName + "' (" + distance + ")");
+                    String name = entity.getName();
+                    list.add("name: '" + name + "'");
 //                    if (entity instanceof EntityZombie) {
 //                        EntityZombie zombie = (EntityZombie) entity;
 //                        float health = zombie.getHealth();
@@ -66,17 +68,28 @@ public class TestHanni extends CommandBase implements IClientCommand {
                 }
                 if (entity instanceof EntityZombie) {
                     EntityZombie zombie = (EntityZombie) entity;
-                    System.out.println(" ");
-                    System.out.println("EntityZombie");
+                    list.add(" ");
+                    list.add("EntityZombie");
                     String customNameTag = zombie.getCustomNameTag();
                     String name = zombie.getName();
-                    System.out.println("customNameTag: '" + customNameTag + "'");
-                    System.out.println("name: '" + name + "'");
-                    System.out.println(" ");
+                    list.add("customNameTag: '" + customNameTag + "'");
+                    list.add("name: '" + name + "'");
+                    list.add(" ");
                 }
             }
         }
-        System.out.println(" ");
+        StringBuilder builder = new StringBuilder();
+        for (String line : list) {
+            builder.append(line);
+            builder.append("\n");
+        }
+        Minecraft.getMinecraft().player.sendMessage(new TextComponentString("Found " + list.size() + " entities nearby!"));
+        setToClipboard(builder.toString());
+    }
+
+    private void setToClipboard(String text) {
+        Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        clipboard.setContents(new StringSelection(text), null);
     }
 
     @Override
